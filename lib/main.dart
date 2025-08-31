@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 1, 121, 7)),
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -52,10 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Lista de sonidos de emergencia (debes agregar los archivos en assets/audio/)
   final List<Map<String, String>> emergencySounds = [
-    {'label': 'Alerta General', 'file': 'alerta_general.mp3'},
-    {'label': 'Emergencia Médica', 'file': 'emergencia_medica.mp3'},
-    {'label': 'Incendio', 'file': 'incendio.mp3'},
-    {'label': 'Caída', 'file': 'caida.mp3'},
+    {'label': 'Barcelona', 'file': 'Barcelona.mp3'},
+    {'label': 'Real madrid', 'file': 'Madrid.mp3'},
+    {'label': 'Liverpool', 'file': 'Liverpool.mp3'},
+    {'label': 'Bayern Munich', 'file': 'Bayern.mp3'},
   ];
 
   void _playSound(String fileName) async {
@@ -63,39 +63,76 @@ class _MyHomePageState extends State<MyHomePage> {
     await _audioPlayer.play(AssetSource('audio/$fileName'));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Alertas Sonoras'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Presiona un botón de emergencia:',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            ...emergencySounds.map((sound) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(250, 60),
-                      textStyle: const TextStyle(fontSize: 20),
-                      backgroundColor: Colors.redAccent,
-                    ),
-                    icon: const Icon(Icons.warning, size: 32),
-                    label: Text(sound['label']!),
-                    onPressed: () => _playSound(sound['file']!),
-                  ),
-                )),
-          ],
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      title: const Text(
+        'Equipos de Futbol',
+        style: TextStyle(
+          fontFamily: 'Roboto',
+          fontWeight: FontWeight.w700,
+          fontSize: 26,
+          letterSpacing: 1.2,
+          color: Colors.white,
         ),
       ),
-    );
-  }
+    ),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            '¡Reproduce sonido de tu equipo favorito!',
+            style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: 32,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF1E88E5), // Azul vibrante
+              letterSpacing: 1.5,
+              shadows: [
+                Shadow(
+                  offset: Offset(2, 2),
+                  blurRadius: 3,
+                  color: Colors.black26,
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 40),
+
+          // Botones generados dinámicamente desde la lista de sonidos
+          ...emergencySounds.map(
+            (sound) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(270, 65),
+                  backgroundColor: const Color(0xFF43A047), // Verde fuerte
+                  foregroundColor: Colors.white,
+                  shadowColor: Colors.black,
+                  elevation: 8,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                icon: const Icon(Icons.sports_soccer, size: 32),
+                label: Text(sound['label']!),
+                onPressed: () => _playSound(sound['file']!),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 }
