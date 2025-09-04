@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -9,39 +8,56 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'UBIAPPS',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 1, 121, 7)),
+        scaffoldBackgroundColor: const Color(0xFF0D47A1),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFFF6F00),
+          brightness: Brightness.dark,
+        ),
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.white,
+          ),
+          bodyMedium: TextStyle(
+            fontFamily: 'Montserrat',
+            fontSize: 18,
+            color: Colors.white70,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFF6F00),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 10,
+            shadowColor: Colors.black54,
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            textStyle: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Montserrat',
+              letterSpacing: 1.1,
+            ),
+          ),
+        ),
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-
-
 class MyHomePage extends StatefulWidget {
   final String title;
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -50,89 +66,146 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  // Lista de sonidos de emergencia (debes agregar los archivos en assets/audio/)
-  final List<Map<String, String>> emergencySounds = [
-    {'label': 'Barcelona', 'file': 'Barcelona.mp3'},
-    {'label': 'Real madrid', 'file': 'Madrid.mp3'},
-    {'label': 'Liverpool', 'file': 'Liverpool.mp3'},
-    {'label': 'Bayern Munich', 'file': 'Bayern.mp3'},
+  final List<Map<String, String>> emergencyItems = [
+    {
+      'label': 'Ingresa',
+      'image': 'assets/images/Ingresa.PNG',
+    },
+    {
+      'label': 'Nosotros',
+      'image': 'assets/images/Nosotros.PNG',
+    },
+    {
+      'label': 'Contáctanos',
+      'image': 'assets/images/Contactanos.PNG',
+    },
+    {
+      'label': 'Campo',
+      'image': 'assets/images/Campo.PNG',
+      'audio': 'assets/audio/Campo.mp3',
+    },
   ];
 
-  void _playSound(String fileName) async {
+  void _playAudio(String audioPath) async {
     await _audioPlayer.stop();
-    await _audioPlayer.play(AssetSource('audio/$fileName'));
+    final relativePath = audioPath.replaceFirst('assets/', '');
+    await _audioPlayer.play(AssetSource(relativePath));
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      title: const Text(
-        'Equipos de Futbol',
-        style: TextStyle(
-          fontFamily: 'Roboto',
-          fontWeight: FontWeight.w700,
-          fontSize: 26,
-          letterSpacing: 1.2,
-          color: Colors.white,
+  void _openImage(String imagePath) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageViewer(imagePath: imagePath),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'UBIAPPS',
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w700,
+            fontSize: 30,
+            letterSpacing: 1.2,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Column(
+            children: [
+              const Text(
+                '¡INTERACTÚA CON LA APP!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  letterSpacing: 1.5,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(2, 2),
+                      blurRadius: 4,
+                      color: Colors.black45,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: emergencyItems.length,
+                  itemBuilder: (context, index) {
+                    final item = emergencyItems[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (item['label'] == 'Campo' && item['audio'] != null) {
+                            _playAudio(item['audio']!);
+                          } else {
+                            _openImage(item['image']!);
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              item['label']!,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Montserrat',
+                                color: Colors.white,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            const Spacer(),
+                            const Icon(Icons.image, size: 30, color: Colors.white),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-    body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            '¡Reproduce sonido de tu equipo favorito!',
-            style: TextStyle(
-              fontFamily: 'Montserrat',
-              fontSize: 32,
-              fontWeight: FontWeight.w900,
-              color: Color(0xFF1E88E5), // Azul vibrante
-              letterSpacing: 1.5,
-              shadows: [
-                Shadow(
-                  offset: Offset(2, 2),
-                  blurRadius: 3,
-                  color: Colors.black26,
-                ),
-              ],
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-
-          // Botones generados dinámicamente desde la lista de sonidos
-          ...emergencySounds.map(
-            (sound) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(270, 65),
-                  backgroundColor: const Color(0xFF43A047), // Verde fuerte
-                  foregroundColor: Colors.white,
-                  shadowColor: Colors.black,
-                  elevation: 8,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                icon: const Icon(Icons.sports_soccer, size: 32),
-                label: Text(sound['label']!),
-                onPressed: () => _playSound(sound['file']!),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+    );
+  }
 }
+
+class ImageViewer extends StatelessWidget {
+  final String imagePath;
+
+  const ImageViewer({super.key, required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: Center(
+        child: InteractiveViewer(
+          child: Image.asset(imagePath),
+        ),
+      ),
+    );
+  }
 }
